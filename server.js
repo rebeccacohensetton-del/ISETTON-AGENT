@@ -80,7 +80,7 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.get('/widget', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'widget.html'));
+ res.sendFile(path.join(__dirname, 'widget.html'));
 });
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
