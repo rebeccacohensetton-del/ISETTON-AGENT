@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISETTON</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e2c878;
+      --gold-dim: rgba(201,168,76,0.15);
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1c1c1c;
+      --border: #262626;
+      --border-gold: rgba(201,168,76,0.3);
+      --text: #f0ede8;
+      --text-muted: #6b6b6b;
+      --text-soft: #9a9a9a;
+      --green: #4caf7d;
+      --radius: 14px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-height: 100vh;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      flex-shrink: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--gold);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .logo-text {
+      flex: 1;
+    }
+
+    .logo-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .logo-sub {
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ─── MESSAGES ─── */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .messages::-webkit-scrollbar { width: 3px; }
+    .messages::-webkit-scrollbar-track { background: transparent; }
+    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ─── MESSAGE ROWS ─── */
+    .msg-row {
+      display: flex;
+      gap: 10px;
+      animation: msgIn 0.25s ease both;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-row.agent { align-self: flex-end; flex-direction: row; }
+    .msg-row.user  { align-self: flex-start; flex-direction: row-reverse; }
+
+    /* ─── BUBBLES ─── */
+    .bubble {
+      max-width: 82%;
+      padding: 11px 15px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.65;
+      word-break: break-word;
+    }
+
+    .msg-row.agent .bubble {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .msg-row.user .bubble {
+      background: linear-gradient(135deg, #1a1500, #231b00);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-bottom-left-radius: 4px;
+      color: #f0e5b8;
+    }
+
+    /* ─── CTA BUTTON ─── */
+    .cta-wrap {
+      animation: msgIn 0.3s 0.15s ease both;
+      padding: 0 2px;
+    }
+
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: linear-gradient(135deg, #b8922e, #d4a83c, #c9a84c);
+      color: #0a0a0a;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.2px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .cta-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(201,168,76,0.35);
+    }
+
+    .cta-btn:active { transform: translateY(0); }
+
+    .cta-arrow {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ─── TYPING ─── */
+    .typing-row {
+      display: flex;
+      align-self: flex-end;
+      animation: msgIn 0.2s ease both;
+    }
+
+    .typing-bubble {
+      padding: 10px 16px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      border-bottom-right-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: typeBounce 1.1s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.18s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes typeBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    /* ─── INPUT AREA ─── */
+    .input-area {
+      flex-shrink: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .input-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      padding: 10px 14px;
+      resize: none;
+      min-height: 42px;
+      max-height: 100px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 0.2s;
+      display: block;
+    }
+
+    textarea:focus { border-color: var(--border-gold); }
+    textarea::placeholder { color: var(--text-muted); }
+
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      background: var(--gold);
+      border: none;
+      border-radius: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:active { transform: scale(0.94); }
+    .send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .send-btn svg {
+      width: 17px;
+      height: 17px;
+      fill: #0a0a0a;
+      transform: scaleX(-1);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 6px 0;
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  </style>
+</head>
+<body>
+<div class="chat-wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L20 7V17L12 22L4 17V7L12 2Z" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 8V16M8 10L12 8L16 10" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <div class="logo-name">ISETTON</div>
+      <div class="logo-sub">אבחון שיווקי אישי</div>
+    </div>
+    <div class="status">
+      <div class="status-dot"></div>
+      זמין
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="messages" id="messages"></div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea
+        id="input"
+        placeholder="כתוב כאן..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="שלח">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const API_URL    = '/api/chat';
+  const SALES_URL  = params.get('sales_url') || 'https://your-sales-page-url.com';
+  const CTA_TEXT   = 'אני רוצה לראות איך סוגרים את הנפילות שלי';
+
+  const OPENING_MSG = `אהלן. ראית את הנתונים בסרטון? מטורף כמה אנרגיה הולכת לפח על דברים שנראים טוב על הנייר.
+
+בוא נבדוק דוגרי מה קורה אצלך — כמה זמן ואנרגיה אתה או הצוות שלך שורפים היום על לידים שרק "באו לשאול" או שבסוף נעלמים?`;
+
+  // ─── STATE ────────────────────────────────────────────────
+  let history   = [];
+  let isSending = false;
+
+  // ─── HELPERS ──────────────────────────────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function scrollBottom() {
+    const el = document.getElementById('messages');
+    el.scrollTop = el.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ─── RENDER MESSAGES ──────────────────────────────────────
+  function addMessage(role, text) {
+    const container = document.getElementById('messages');
+
+    // Split CTA marker from text
+    const hasCTA  = text.includes('[CTA_BUTTON]');
+    const cleanTxt = text.replace('[CTA_BUTTON]', '').trim();
+
+    if (cleanTxt) {
+      const row = document.createElement('div');
+      row.className = `msg-row ${role}`;
+      row.innerHTML = `<div class="bubble">${escapeHtml(cleanTxt).replace(/\n/g, '<br>')}</div>`;
+      container.appendChild(row);
+    }
+
+    if (hasCTA) {
+      const wrap = document.createElement('div');
+      wrap.className = 'cta-wrap';
+      const btn = document.createElement('a');
+      btn.className  = 'cta-btn';
+      btn.href       = SALES_URL;
+      btn.target     = '_blank';
+      btn.rel        = 'noopener noreferrer';
+      btn.innerHTML  = `<span>${escapeHtml(CTA_TEXT)}</span><span class="cta-arrow">←</span>`;
+      wrap.appendChild(btn);
+      container.appendChild(wrap);
+    }
+
+    scrollBottom();
+  }
+
+  function showTyping() {
+    const container = document.getElementById('messages');
+    const row = document.createElement('div');
+    row.id = 'typing';
+    row.className = 'typing-row';
+    row.innerHTML = `<div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+    container.appendChild(row);
+    scrollBottom();
+  }
+
+  function hideTyping() {
+    const el = document.getElementById('typing');
+    if (el) el.remove();
+  }
+
+  // ─── SEND MESSAGE ─────────────────────────────────────────
+  async function sendMessage() {
+    if (isSending) return;
+    const input = document.getElementById('input');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    isSending = true;
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('sendBtn').disabled = true;
+
+    addMessage('user', text);
+    history.push({ role: 'user', content: text });
+    showTyping();
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      });
+
+      hideTyping();
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+      const reply = data.message || 'משהו השתבש, נסה שוב.';
+
+      history.push({ role: 'assistant', content: reply });
+      addMessage('agent', reply);
+
+    } catch (err) {
+      hideTyping();
+      addMessage('agent', 'משהו השתבש, נסה שוב בעוד שנייה.');
+      console.error('Chat error:', err);
+    }
+
+    isSending = false;
+    document.getElementById('sendBtn').disabled = false;
+    document.getElementById('input').focus();
+  }
+
+  // ─── INIT ─────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    // Opening message with slight delay for polish
+    setTimeout(() => {
+      history.push({ role: 'assistant', content: OPENING_MSG });
+      addMessage('agent', OPENING_MSG);
+      document.getElementById('input').focus();
+    }, 500);
+  });
+</script>
+</body>
+</html>
