@@ -77,7 +77,7 @@ async function saveToAirtable(messages, reply) {
       .map(m => `${m.role === 'user' ? '👤 ליד' : '🤖 סוכן'}: ${m.content}`)
       .join('\n\n');
 
-    await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_TABLE_ID}`, {
+    const res = await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_TABLE_ID}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
@@ -85,13 +85,20 @@ async function saveToAirtable(messages, reply) {
       },
       body: JSON.stringify({
         fields: {
-          'DATE': new Date().toISOString(),
+          'DATE': new Date().toISOString().split('T')[0],
           'LAST MESSAGE': lastUserMsg,
           'CTA': ctaReached,
           'CONVERSATION': conversation
         }
       })
     });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Airtable error:', res.status, err);
+    } else {
+      console.log('Airtable saved OK');
+    }
   } catch (err) {
     console.error('Airtable save error:', err.message);
   }
