@@ -68,7 +68,7 @@ function buildSystemPrompt() {
 ${JSON.stringify(kb, null, 2)}`;
 }
 
-async function saveToMake(messages, reply) {
+async function saveToMake(messages, reply, name, phone) {
   try {
     const webhookUrl = process.env.MAKE_WEBHOOK_URL;
     if (!webhookUrl) { console.error('MAKE_WEBHOOK_URL not set'); return; }
@@ -85,6 +85,8 @@ async function saveToMake(messages, reply) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         date: new Date().toISOString().split('T')[0],
+        name: name || '',
+        phone: phone || '',
         lastMessage: lastUserMsg,
         cta: ctaReached,
         conversation
@@ -102,7 +104,7 @@ async function saveToMake(messages, reply) {
 }
 
 app.post('/api/chat', async (req, res) => {
-  const { messages } = req.body;
+  const { messages, name, phone } = req.body;
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'messages required' });
   }
@@ -124,7 +126,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     const text = response.content.find(b => b.type === 'text')?.text || '';
-    saveToMake(messages, text);
+    saveToMake(messages, text, name, phone);
     res.json({ message: text });
   } catch (error) {
     console.error('Claude API error:', error.message);

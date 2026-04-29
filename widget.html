@@ -365,6 +365,8 @@
   const API_URL    = '/api/chat';
   const SALES_URL  = params.get('sales_url') || 'https://isetton-hub.base44.app/thank-you';
   const CTA_TEXT   = 'לקביעת שיחת אפיון אישית';
+  const LEAD_NAME  = params.get('name') || '';
+  const LEAD_PHONE = params.get('phone') || '';
 
   const OPENING_MSG = `אהלן. ראית את הנתונים בסרטון? מטורף כמה אנרגיה הולכת לפח על דברים שנראים טוב על הנייר.
 
@@ -470,7 +472,7 @@
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history })
+        body: JSON.stringify({ messages: history, name: LEAD_NAME, phone: LEAD_PHONE })
       });
 
       hideTyping();
