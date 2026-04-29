@@ -77,7 +77,8 @@ async function saveToAirtable(messages, reply) {
       .map(m => `${m.role === 'user' ? '👤 ליד' : '🤖 סוכן'}: ${m.content}`)
       .join('\n\n');
 
-    const url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Table%201`;
+    const tableId = process.env.AIRTABLE_TABLE_ID || 'Table%201';
+    const url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${tableId}`;
     console.log('Airtable URL:', url);
     const res = await fetch(url, {
       method: 'POST',
