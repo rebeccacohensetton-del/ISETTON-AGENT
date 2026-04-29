@@ -68,8 +68,11 @@ function buildSystemPrompt() {
 ${JSON.stringify(kb, null, 2)}`;
 }
 
-async function saveToAirtable(messages, reply) {
+async function saveToMake(messages, reply) {
   try {
+    const webhookUrl = process.env.MAKE_WEBHOOK_URL;
+    if (!webhookUrl) { console.error('MAKE_WEBHOOK_URL not set'); return; }
+
     const userMessages = messages.filter(m => m.role === 'user');
     const lastUserMsg = userMessages[userMessages.length - 1]?.content || '';
     const ctaReached = reply.includes('[CTA_BUTTON]');
@@ -77,33 +80,24 @@ async function saveToAirtable(messages, reply) {
       .map(m => `${m.role === 'user' ? '👤 ליד' : '🤖 סוכן'}: ${m.content}`)
       .join('\n\n');
 
-    const tableId = process.env.AIRTABLE_TABLE_ID || 'Table%201';
-    const url = `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${tableId}`;
-    console.log('Airtable URL:', url);
-    const res = await fetch(url, {
+    const res = await fetch(webhookUrl, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        fields: {
-          'DATE': new Date().toISOString().split('T')[0],
-          'LAST MESSAGE': lastUserMsg,
-          'CTA': ctaReached,
-          'CONVERSATION': conversation
-        }
+        date: new Date().toISOString().split('T')[0],
+        lastMessage: lastUserMsg,
+        cta: ctaReached,
+        conversation
       })
     });
 
     if (!res.ok) {
-      const err = await res.text();
-      console.error('Airtable error:', res.status, err);
+      console.error('Make webhook error:', res.status);
     } else {
-      console.log('Airtable saved OK');
+      console.log('Make webhook sent OK');
     }
   } catch (err) {
-    console.error('Airtable save error:', err.message);
+    console.error('Make webhook error:', err.message);
   }
 }
 
@@ -130,7 +124,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     const text = response.content.find(b => b.type === 'text')?.text || '';
-    saveToAirtable(messages, text);
+    saveToMake(messages, text);
     res.json({ message: text });
   } catch (error) {
     console.error('Claude API error:', error.message);
