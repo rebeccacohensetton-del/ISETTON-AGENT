@@ -8,18 +8,21 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --gold: #c9a84c;
-      --gold-light: #e2c878;
-      --gold-dim: rgba(201,168,76,0.15);
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface-2: #1c1c1c;
-      --border: #262626;
-      --border-gold: rgba(201,168,76,0.3);
-      --text: #f0ede8;
-      --text-muted: #6b6b6b;
-      --text-soft: #9a9a9a;
-      --green: #4caf7d;
+      --navy: #042e46;
+      --navy-light: #0a4a70;
+      --navy-dim: rgba(4,46,70,0.08);
+      --orange: #db7d41;
+      --orange-light: #e8965e;
+      --orange-dim: rgba(219,125,65,0.15);
+      --bg: #ffffff;
+      --surface: #f8f8f8;
+      --surface-2: #f0f0f0;
+      --border: #e0e0e0;
+      --border-navy: rgba(4,46,70,0.2);
+      --text: #1a1a1a;
+      --text-muted: #888888;
+      --text-soft: #555555;
+      --green: #2ecc87;
       --radius: 14px;
     }
 
@@ -42,8 +45,8 @@
     /* ─── HEADER ─── */
     .header {
       flex-shrink: 0;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
       padding: 12px 18px;
       display: flex;
       align-items: center;
@@ -53,7 +56,7 @@
     .logo-mark {
       width: 36px;
       height: 36px;
-      border: 1.5px solid var(--gold);
+      border: 1.5px solid var(--orange);
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -74,14 +77,14 @@
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 2.5px;
-      color: var(--gold);
+      color: var(--orange);
       text-transform: uppercase;
     }
 
     .logo-sub {
       font-size: 10px;
       letter-spacing: 0.5px;
-      color: var(--text-muted);
+      color: rgba(255,255,255,0.5);
       margin-top: 1px;
     }
 
@@ -90,7 +93,7 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      color: var(--text-muted);
+      color: rgba(255,255,255,0.6);
     }
 
     .status-dot {
@@ -116,6 +119,7 @@
       flex-direction: column;
       gap: 14px;
       scroll-behavior: smooth;
+      background: var(--bg);
     }
 
     .messages::-webkit-scrollbar { width: 3px; }
@@ -155,10 +159,10 @@
     }
 
     .msg-row.user .bubble {
-      background: linear-gradient(135deg, #1a1500, #231b00);
-      border: 1px solid rgba(201,168,76,0.25);
+      background: var(--navy);
+      border: 1px solid var(--navy-light);
       border-bottom-left-radius: 4px;
-      color: #f0e5b8;
+      color: #ffffff;
     }
 
     /* ─── CTA BUTTON ─── */
@@ -173,8 +177,8 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      background: linear-gradient(135deg, #b8922e, #d4a83c, #c9a84c);
-      color: #0a0a0a;
+      background: linear-gradient(135deg, #c96e30, #db7d41, #e8965e);
+      color: #ffffff;
       border: none;
       padding: 14px 20px;
       border-radius: 12px;
@@ -184,7 +188,7 @@
       letter-spacing: 0.2px;
       text-decoration: none;
       transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+      box-shadow: 0 4px 20px rgba(219,125,65,0.3);
       line-height: 1.3;
       text-align: center;
     }
@@ -192,7 +196,7 @@
     .cta-btn:hover {
       opacity: 0.92;
       transform: translateY(-1px);
-      box-shadow: 0 6px 28px rgba(201,168,76,0.35);
+      box-shadow: 0 6px 28px rgba(219,125,65,0.4);
     }
 
     .cta-btn:active { transform: translateY(0); }
@@ -253,7 +257,7 @@
 
     textarea {
       width: 100%;
-      background: var(--surface-2);
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 11px;
       color: var(--text);
@@ -269,14 +273,14 @@
       display: block;
     }
 
-    textarea:focus { border-color: var(--border-gold); }
+    textarea:focus { border-color: var(--orange); }
     textarea::placeholder { color: var(--text-muted); }
 
     .send-btn {
       width: 42px;
       height: 42px;
       min-width: 42px;
-      background: var(--gold);
+      background: var(--orange);
       border: none;
       border-radius: 11px;
       cursor: pointer;
@@ -294,7 +298,7 @@
     .send-btn svg {
       width: 17px;
       height: 17px;
-      fill: #0a0a0a;
+      fill: #ffffff;
       transform: scaleX(-1);
     }
 
@@ -318,8 +322,8 @@
   <div class="header">
     <div class="logo-mark">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L20 7V17L12 22L4 17V7L12 2Z" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M12 8V16M8 10L12 8L16 10" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 2L20 7V17L12 22L4 17V7L12 2Z" stroke="#db7d41" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 8V16M8 10L12 8L16 10" stroke="#db7d41" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
     <div class="logo-text">
@@ -359,9 +363,8 @@
   // ─── CONFIG ───────────────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
   const API_URL    = '/api/chat';
-  const SALES_URL  = params.get('sales_url') || 'https://your-sales-page-url.com';
- const CTA_TEXT   = 'לקביעת שיחת אפיון אישית';
-
+  const SALES_URL  = params.get('sales_url') || 'https://isetton-hub.base44.app/thank-you';
+  const CTA_TEXT   = 'לקביעת שיחת אפיון אישית';
 
   const OPENING_MSG = `אהלן. ראית את הנתונים בסרטון? מטורף כמה אנרגיה הולכת לפח על דברים שנראים טוב על הנייר.
 
@@ -493,7 +496,6 @@
 
   // ─── INIT ─────────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
-    // Opening message with slight delay for polish
     setTimeout(() => {
       history.push({ role: 'assistant', content: OPENING_MSG });
       addMessage('agent', OPENING_MSG);
