@@ -68,6 +68,35 @@ function buildSystemPrompt() {
 ${JSON.stringify(kb, null, 2)}`;
 }
 
+async function saveToAirtable(messages, reply) {
+  try {
+    const userMessages = messages.filter(m => m.role === 'user');
+    const lastUserMsg = userMessages[userMessages.length - 1]?.content || '';
+    const ctaReached = reply.includes('[CTA_BUTTON]');
+    const conversation = messages
+      .map(m => `${m.role === 'user' ? '👤 ליד' : '🤖 סוכן'}: ${m.content}`)
+      .join('\n\n');
+
+    await fetch(`https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/${process.env.AIRTABLE_TABLE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        fields: {
+          'DATE': new Date().toISOString(),
+          'LAST MESSAGE': lastUserMsg,
+          'CTA': ctaReached,
+          'CONVERSATION': conversation
+        }
+      })
+    });
+  } catch (err) {
+    console.error('Airtable save error:', err.message);
+  }
+}
+
 app.post('/api/chat', async (req, res) => {
   const { messages } = req.body;
   if (!messages || !Array.isArray(messages)) {
@@ -91,6 +120,7 @@ app.post('/api/chat', async (req, res) => {
     });
 
     const text = response.content.find(b => b.type === 'text')?.text || '';
+    saveToAirtable(messages, text);
     res.json({ message: text });
   } catch (error) {
     console.error('Claude API error:', error.message);
